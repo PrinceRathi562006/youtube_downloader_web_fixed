@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory
 from pytubefix import YouTube
 import os
 import re
@@ -23,7 +23,9 @@ def home():
             if not link:
                 return render_template("index.html", message="⚠️ Please enter a YouTube URL.")
 
-            yt = YouTube(link)
+            # ✅ Use Player-Origin Token
+            yt = YouTube(link, use_po_token=True)
+
             title = yt.title
             thumb_url = yt.thumbnail_url
 
@@ -67,26 +69,25 @@ def download():
         choice = request.form.get("choice")
         quality = request.form.get("quality")
 
-        yt = YouTube(link)
+        # ✅ Use Player-Origin Token again here
+        yt = YouTube(link, use_po_token=True)
+
         safe_title = sanitize_filename(yt.title)
         downloads_path = get_downloads_folder()
         os.makedirs(downloads_path, exist_ok=True)
 
         if choice == "audio":
-            # ✅ Audio-only download
             stream = yt.streams.filter(only_audio=True).first()
             file_path = stream.download(output_path=downloads_path, filename=f"{safe_title}.mp3")
             message = f"✅ <b>{yt.title}</b> downloaded successfully as audio!<br>📂 Saved in: <b>Downloads</b>"
 
         else:
-            # ✅ Try both progressive and adaptive
             stream = yt.streams.filter(res=quality, file_extension="mp4").first()
             if not stream:
                 return render_template("index.html", message="❌ Selected resolution not available.")
             file_path = stream.download(output_path=downloads_path, filename=f"{safe_title}.mp4")
             message = f"✅ <b>{yt.title}</b> downloaded successfully in {quality} quality!<br>📂 Saved in: <b>Downloads</b>"
 
-        # ✅ Re-render with success message
         return render_template(
             "index.html",
             message=message,
@@ -99,8 +100,7 @@ def download():
         return render_template("index.html", message=f"❌ Error: {str(e)}")
 
 
-from flask import send_from_directory
-
+# ✅ SEO-related files
 @app.route("/robots.txt")
 def robots():
     return send_from_directory("static", "robots.txt")
@@ -115,5 +115,4 @@ def google_verification():
 
 
 if __name__ == "__main__":
-    # For local development:
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=False)
