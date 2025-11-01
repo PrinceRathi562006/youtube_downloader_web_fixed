@@ -6,6 +6,8 @@ from pathlib import Path
 
 app = Flask(__name__)
 
+os.environ["PYTUBE_PO_TOKEN"] = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"
+
 def sanitize_filename(name):
     """Clean title to make it a safe filename."""
     name = re.sub(r'[\\/*?:"<>|#🔥🗿]', "", name)
