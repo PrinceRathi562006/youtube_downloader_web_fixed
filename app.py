@@ -109,6 +109,10 @@ def robots():
 def sitemap():
     return send_from_directory("static", "sitemap.xml")
 
+@app.route("/googleabaf9b569873b3d9.html")
+def google_verification():
+    return app.send_static_file("googleabaf9b569873b3d9.html")
+
 
 if __name__ == "__main__":
     # For local development:
