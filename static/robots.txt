@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://youtube-video-downloader-6in3.onrender.com/sitemap.xml
+
+# --- SEO Optimized Robots.txt ---
+# Allow all search engines to crawl and index this website.
+# This helps increase visibility for keywords like:
+# YouTube Video Downloader, Free YouTube Downloader, MP4, MP3 download.
