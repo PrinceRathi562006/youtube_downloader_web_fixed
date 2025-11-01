@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YouTube Downloader | Free HD Video & Audio Download Tool</title>
+
+  <!-- ✅ SEO Meta Tags -->
+  <meta name="description" content="Download YouTube videos and audio in HD, Full HD, 4K, and MP3 for free. Fast, secure, and no registration required. YouTube Video Downloader online tool." />
+  <meta name="keywords" content="YouTube downloader, YouTube video download, YouTube mp3, video downloader online, HD YouTube download, MP4, 4K, YouTube Shorts download, YouTube to MP3, YouTube to MP4, best YouTube downloader, download videos online" />
+  <meta name="author" content="Prince" />
+  <meta name="robots" content="index, follow" />
+  <meta name="language" content="English" />
+
+  <!-- ✅ Open Graph (Facebook, WhatsApp) -->
+  <meta property="og:title" content="Free YouTube Downloader - Download Videos in HD & MP3" />
+  <meta property="og:description" content="Fast, safe, and free YouTube Video Downloader. Download MP4, MP3, 4K videos directly to your device." />
+  <meta property="og:image" content="{{ url_for('static', filename='yt-logo.png') }}" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://yourdomain.com" />
+
+  <!-- ✅ Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Free YouTube Downloader - Download Videos in HD" />
+  <meta name="twitter:description" content="Download YouTube videos and music for free. Works on all devices with high-quality options." />
+  <meta name="twitter:image" content="{{ url_for('static', filename='yt-logo.png') }}" />
+
+  <!-- ✅ Schema Markup for Google -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "YouTube Downloader",
+    "url": "https://yourdomain.com",
+    "author": { "@type": "Person", "name": "Prince" },
+    "description": "Download YouTube videos in HD, 4K, and MP3 formats for free.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "YouTube Downloader",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "{{ url_for('static', filename='yt-logo.png') }}"
+      }
+    }
+  }
+  </script>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: #f8f9fa;
+      color: #222;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    .container {
+      margin-top: 60px;
+    }
+    .logo {
+      width: 120px;
+      margin-bottom: 10px;
+    }
+    input[type="text"] {
+      width: 60%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+    button {
+      background: #e62117;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #c51610;
+    }
+    .options {
+      margin-top: 40px;
+    }
+    .options img {
+      width: 100%;
+      max-width: 480px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    select {
+      padding: 10px;
+      width: 60%;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+    .message {
+      background: #d1e7dd;
+      color: #0f5132;
+      padding: 15px;
+      border-radius: 6px;
+      width: 60%;
+      margin: 20px auto;
+      font-weight: 500;
+    }
+    /* Responsive About Section */
+    .about-section {
+      background: #ffffff;
+      padding: 80px 5%;
+      width: 100%;
+      color: #222;
+      line-height: 1.7;
+      margin-top: 80px;
+      border-top: 1px solid #ddd;
+    }
+    .about-section h1,
+    .about-section h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .about-section p,
+    .about-section ul {
+      max-width: 1100px;
+      margin: 0 auto 20px;
+      font-size: 1.05rem;
+    }
+    .highlight {
+      color: #e62117;
+    }
+    footer {
+      background: #0d1117;
+      color: #ccc;
+      text-align: center;
+      padding: 40px 20px;
+      margin-top: 50px;
+    }
+    footer a {
+      color: #0073e6;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="{{ url_for('static', filename='yt-logo.png') }}" alt="YouTube Logo" class="logo" />
+    <h1>YouTube Downloader</h1>
+    <form action="/" method="post">
+      <input type="text" name="link" placeholder="Enter YouTube URL" required />
+      <button type="submit">Fetch Video</button>
+    </form>
+  </div>
+
+    {% if title %}
+  <div class="options" id="videoSection">
+    <h2>🎬 {{ title }}</h2>
+    <img src="{{ thumb_url }}" alt="Video Thumbnail" />
+    <form method="post" action="/download">
+      <input type="hidden" name="link" value="{{ link }}" />
+      <label for="choice">Select format or quality:</label>
+      <select name="choice" id="choice" required>
+        {% for stream in video_streams %}
+          <option value="video_{{ stream.resolution }}">🎞️ Video - {{ stream.resolution }} ({{ stream.mime_type }})</option>
+        {% endfor %}
+        {% for stream in audio_streams %}
+          <option value="audio_{{ stream.abr }}">🎧 Audio only - {{ stream.abr }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit">Download Selected Option</button>
+    </form>
+  </div>
+  {% endif %}
+
+  {% if message %}
+  <div class="message" id="msgBox">{{ message|safe }}</div>
+  {% endif %}
+
+
+  <!-- ✅ About Section -->
+  <section id="about" class="about-section">
+  <div class="container">
+    <h1>About Our Free YouTube Video Downloader</h1>
+
+    <p>
+      Welcome to <strong>YouTube Video Downloader</strong> — the ultimate free online platform designed for
+      seamless and high-speed <em>YouTube video downloading</em>. Whether you want to
+      <strong>download YouTube videos in MP4, MP3, 4K, or HD</strong>, this website allows you to
+      save and watch your favorite content anytime, anywhere. Our goal is to provide a
+      safe, easy-to-use, and reliable YouTube downloader that helps you convert and save videos
+      for offline use without installing any software or plugins.
+    </p>
+
+    <h2>Why Choose Our YouTube Downloader?</h2>
+    <p>
+      Our downloader is built using advanced backend technology powered by Flask and Pytube,
+      ensuring fast performance, smooth conversions, and compatibility with all devices.
+      You can choose your preferred <strong>video quality</strong>, including 144p, 240p, 360p,
+      480p, 720p, 1080p, 2K, and 4K resolutions, or download only the <strong>audio</strong>
+      version in high-quality MP3 format. This flexibility makes it a perfect tool for users
+      who love listening to songs, saving lectures, or keeping videos offline.
+    </p>
+
+    <h2>Key Features of Our YouTube Downloader</h2>
+    <ul>
+      <li>🎥 <strong>Download YouTube videos in all resolutions</strong> — from 144p to 4K Ultra HD.</li>
+      <li>🎧 <strong>Convert videos to MP3 audio</strong> format instantly.</li>
+      <li>⚡ <strong>Fast and reliable downloads</strong> using optimized streaming technology.</li>
+      <li>🖼️ <strong>View video thumbnail and title</strong> before downloading.</li>
+      <li>📱 <strong>Works on all devices</strong> — Android, iPhone, Windows, and macOS.</li>
+      <li>🔒 <strong>Safe, secure, and no registration required.</strong></li>
+      <li>💡 <strong>Completely free</strong> — no hidden fees or premium subscriptions.</li>
+    </ul>
+
+    <h2>How to Use the YouTube Video Downloader</h2>
+    <ol>
+      <li>Copy the <strong>URL</strong> of the YouTube video you wish to download.</li>
+      <li>Paste the link into the input box on the homepage.</li>
+      <li>Select whether you want to <strong>download video or audio</strong>.</li>
+      <li>Choose the <strong>quality</strong> (360p, 720p, 1080p, etc.) or “Audio Only”.</li>
+      <li>Click the <strong>Download</strong> button and wait for the file to be saved to your system.</li>
+    </ol>
+
+    <h2>Supported Formats</h2>
+    <p>
+      Our downloader supports a variety of popular formats to meet your needs:
+    </p>
+    <ul>
+      <li><strong>MP4</strong> — Best for video playback on all devices.</li>
+      <li><strong>MP3</strong> — Ideal for extracting audio from videos.</li>
+      <li><strong>WEBM</strong> — Modern format for high-quality compression.</li>
+      <li><strong>3GP</strong> — Lightweight format for older mobile devices.</li>
+    </ul>
+
+    <h2>SEO Keywords and Ranking Optimization</h2>
+    <p>
+      This website is optimized with top-performing keywords like
+      <strong>free YouTube video downloader</strong>,
+      <strong>download YouTube videos online</strong>,
+      <strong>YouTube MP3 converter</strong>,
+      <strong>HD YouTube downloader</strong>,
+      <strong>4K video downloader</strong>,
+      <strong>YouTube shorts downloader</strong>, and
+      <strong>video to audio converter</strong>.
+      Our goal is to make this platform easily discoverable across Google, Bing, and other search engines.
+    </p>
+
+    <h2>Legal Disclaimer</h2>
+    <p>
+      This website is intended only for downloading publicly available or royalty-free content from YouTube.
+      We strongly discourage downloading copyrighted material without permission.
+      Users are responsible for ensuring they comply with YouTube’s Terms of Service and copyright laws.
+    </p>
+
+    <h2>Our Mission</h2>
+    <p>
+      We aim to create a user-friendly and powerful YouTube video downloader that allows anyone to enjoy their
+      favorite media offline. Whether you’re a student saving lectures, a music lover collecting playlists,
+      or a content creator archiving your videos — our tool gives you full control over your downloads.
+    </p>
+
+    <h2>Frequently Asked Questions (FAQs)</h2>
+    <h3>1. Is this YouTube Downloader free?</h3>
+    <p>Yes! It’s completely free to use with no sign-up or subscription required.</p>
+
+    <h3>2. Can I use it on my phone?</h3>
+    <p>Absolutely! The website works perfectly on Android, iPhone, and tablets.</p>
+
+    <h3>3. What video qualities are available?</h3>
+    <p>You can choose from multiple qualities including 360p, 480p, 720p, 1080p, 2K, and 4K resolutions.</p>
+
+    <h3>4. Can I download just the audio?</h3>
+    <p>Yes, simply select the “Audio Only” option to convert and download as an MP3 file.</p>
+
+    <h3>5. Is this tool safe to use?</h3>
+    <p>Yes, it’s 100% secure — we don’t collect personal data or store any downloaded files on our servers.</p>
+
+    <h2>Our SEO and AdSense Commitment</h2>
+    <p>
+      This website follows all <strong>Google AdSense policies</strong>, including high-quality, original content,
+      clear navigation, and a user-first experience. Our pages are SEO-optimized with proper heading structures,
+      meta descriptions, internal linking, and relevant keyword usage to achieve better search ranking and monetization potential.
+    </p>
+
+    <h2>Join Millions of Users Worldwide</h2>
+    <p>
+      Every day, thousands of users use this downloader to convert and save YouTube videos.
+      Whether it’s tutorials, music, documentaries, or short clips — our goal is to help you
+      <strong>download YouTube videos quickly and safely</strong> in any format you prefer.
+    </p>
+
+    <h2>Contact and Support</h2>
+    <p>
+      If you encounter any issues or have suggestions for improvement, feel free to reach out
+      through our contact page. We continuously update our service for better stability, faster downloads,
+      and new features.
+    </p>
+
+    <h2>Conclusion</h2>
+    <p>
+      Our <strong>YouTube Downloader</strong> is the simplest, fastest, and safest way to
+      <strong>download YouTube videos in MP4, MP3, and HD</strong> for free.
+      It’s built for everyone — from casual viewers to professionals — who need quick access to
+      offline content. Bookmark our site and enjoy unlimited downloads without restrictions!
+    </p>
+
+    <footer class="footer">
+      <p>Made by <strong>Prince</strong> with ❤️ | © 2025 All Rights Reserved.</p>
+    </footer>
+  </div>
+</section>
+
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
